@@ -1,5 +1,5 @@
 import '../src/lit-combo-box.js';
-import {elements} from './demo-data.js';
+import { elements } from './demo-data.js';
 
 const comboBox = document.createElement('lit-combo-box');
 document.body.appendChild(comboBox);

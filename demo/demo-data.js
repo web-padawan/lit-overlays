@@ -1,4 +1,4 @@
-const elementsJson = [
+export const elements = [
   {name: 'Hydrogen', symbol: 'H', index: 1},
   {name: 'Helium', symbol: 'He', index: 2},
   {name: 'Lithium', symbol: 'Li', index: 3},
@@ -118,5 +118,3 @@ const elementsJson = [
   {name: 'Ununseptium', symbol: 'Uus', index: 117},
   {name: 'Ununoctium', symbol: 'Uuo', index: 118}
 ];
-
-export const elements = elementsJson;
