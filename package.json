@@ -1,0 +1,21 @@
+{
+  "name": "lit-combo-box",
+  "version": "0.1.0",
+  "description": "Prototype combo-box with lit-virtualizer",
+  "keywords": [],
+  "author": "Serhii Kulykov <iamkulykov@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack-dev-server"
+  },
+  "dependencies": {
+    "lit-virtualizer": "^0.3.0"
+  },
+  "devDependencies": {
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.39.2",
+    "webpack-babel-multi-target-plugin": "^2.3.0-alpha.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.8.0"
+  }
+}
