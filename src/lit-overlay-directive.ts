@@ -1,10 +1,10 @@
-import { directive, TemplateResult, NodePart, nothing } from 'lit-html';
+import { directive, TemplateResult, Part, NodePart, nothing } from 'lit-html';
 import { render } from 'lit-html/lib/shady-render';
-import { LitOverlay } from './lit-overlay.js';
+import { LitOverlay } from './lit-overlay';
 
 const teleportCaches = new WeakMap();
 
-export const overlay = directive((opened, value, config = {}) => (part) => {
+export const overlay = directive((opened: unknown, value, config = {}) => (part: Part) => {
   if (!(part instanceof NodePart)) {
     throw new Error('overlay can only be used in text bindings');
   }

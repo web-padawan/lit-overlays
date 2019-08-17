@@ -11,6 +11,17 @@ module.exports = {
     path: resolve('demo'),
     filename: '[name].[chunkhash:8].js'
   },
+  resolve: {
+    extensions: [
+      '.ts',
+      '.js'
+    ],
+    mainFields: [
+      'es2015',
+      'module',
+      'main'
+    ]
+  },
   module: {
     rules: [
       {
@@ -18,6 +29,19 @@ module.exports = {
         use: [
           BabelMultiTargetPlugin.loader()
         ]
+      },
+      {
+        test: /\.ts$/,
+        use: [
+          {
+            loader: 'awesome-typescript-loader',
+            options: {
+              silent: true,
+              useCache: true,
+              cacheDirectory: 'node_modules/.cache/awesome-typescript-loader',
+            },
+          }
+        ],
       }
     ]
   },

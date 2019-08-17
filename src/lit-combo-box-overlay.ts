@@ -1,11 +1,12 @@
-import { css } from 'lit-element';
-import { LitOverlay } from './lit-overlay.js';
+import { css, customElement, property } from 'lit-element';
+import { LitOverlay } from './lit-overlay';
 
+@customElement('lit-combo-box-overlay')
 class LitComboBoxOverlay extends LitOverlay {
+  // Used to instantiate the class.
+  static is = 'lit-combo-box-overlay';
 
-  static get is() {
-    return 'lit-combo-box-overlay';
-  }
+  @property() positionTarget: HTMLElement | null = null;
 
   static get styles() {
     return [
@@ -27,31 +28,28 @@ class LitComboBoxOverlay extends LitOverlay {
     ];
   }
 
-  constructor() {
-    super();
-    this._boundSetPosition = this._setPosition.bind(this);
-  }
+  protected boundSetPosition = this.setPosition.bind(this);
 
   open() {
     super.open()
 
     window.requestAnimationFrame(() => {
-      this._setPosition();
+      this.setPosition();
     });
   }
 
   connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('resize', this._boundSetPosition);
+    window.addEventListener('resize', this.boundSetPosition);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener('resize', this._boundSetPosition);
+    window.removeEventListener('resize', this.boundSetPosition);
   }
 
- _setPosition() {
-    const rect = this.positionTarget.getBoundingClientRect();
+ protected setPosition() {
+    const rect = (this.positionTarget as HTMLElement).getBoundingClientRect();
     this.style.left = rect.left + 'px';
     this.style.top = rect.top + rect.height + 'px';
     this.style.width = rect.width + 'px';
@@ -59,7 +57,5 @@ class LitComboBoxOverlay extends LitOverlay {
     this.style.right = 'auto';
   }
 }
-
-customElements.define(LitComboBoxOverlay.is, LitComboBoxOverlay);
 
 export { LitComboBoxOverlay };

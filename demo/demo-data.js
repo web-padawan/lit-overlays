@@ -1,4 +1,4 @@
-export const elements = [
+const elementsJson = [
   {name: 'Hydrogen', symbol: 'H', index: 1},
   {name: 'Helium', symbol: 'He', index: 2},
   {name: 'Lithium', symbol: 'Li', index: 3},
@@ -118,3 +118,10 @@ export const elements = [
   {name: 'Ununseptium', symbol: 'Uus', index: 117},
   {name: 'Ununoctium', symbol: 'Uuo', index: 118}
 ];
+
+export const elements = elementsJson.map(item => {
+  return {
+    value: item.name,
+    label: `${item.index} ${item.name}`
+  };
+});
