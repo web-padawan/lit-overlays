@@ -5,9 +5,16 @@
   "keywords": [],
   "author": "Serhii Kulykov <iamkulykov@gmail.com>",
   "license": "MIT",
+  "main": "lib/lit-combo-box.js",
+  "module": "lib/lit-combo-box.js",
+  "files": [
+    "lib",
+    "src"
+  ],
   "scripts": {
     "lint": "eslint src --ext .ts",
-    "dev": "webpack-dev-server"
+    "dev": "webpack-dev-server",
+    "build": "tsc"
   },
   "dependencies": {
     "lit-virtualizer": "^0.3.0"
