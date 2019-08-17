@@ -10,14 +10,15 @@ export const overlay = directive((opened: unknown, value, config = {}) => (part:
   }
 
   if (value instanceof TemplateResult) {
-    let template, teleport;
-    let teleportCache = teleportCaches.get(part);
+    let template;
+    let teleport;
+    const teleportCache = teleportCaches.get(part);
 
     if (teleportCache === undefined) {
       // initialize the template
       template = part.options.templateFactory(value);
 
-      let {component, backdrop} = config;
+      let { component } = config;
 
       if (Object.getPrototypeOf(component) !== LitOverlay) {
         console.warn('Custom overlay component must extend lit-overlay');
@@ -26,10 +27,10 @@ export const overlay = directive((opened: unknown, value, config = {}) => (part:
 
       // create a new overlay
       teleport = document.createElement(component.is);
-      teleport.withBackdrop = backdrop;
+      teleport.withBackdrop = config.backdrop;
 
       // save overlay into cache
-      teleportCaches.set(part, {template, teleport});
+      teleportCaches.set(part, { template, teleport });
 
       // set the initial value
       part.setValue(teleport);

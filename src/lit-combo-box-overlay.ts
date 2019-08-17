@@ -6,7 +6,7 @@ class LitComboBoxOverlay extends LitOverlay {
   // Used to instantiate the class.
   static is = 'lit-combo-box-overlay';
 
-  @property() positionTarget: HTMLElement | null = null;
+  @property() positionTarget: HTMLElement | null = null;
 
   static get styles() {
     return [
@@ -17,7 +17,7 @@ class LitComboBoxOverlay extends LitOverlay {
           align-items: stretch;
         }
 
-        [part="overlay"] {
+        [part='overlay'] {
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
@@ -31,7 +31,7 @@ class LitComboBoxOverlay extends LitOverlay {
   protected boundSetPosition = this.setPosition.bind(this);
 
   open() {
-    super.open()
+    super.open();
 
     window.requestAnimationFrame(() => {
       this.setPosition();
@@ -48,11 +48,11 @@ class LitComboBoxOverlay extends LitOverlay {
     window.removeEventListener('resize', this.boundSetPosition);
   }
 
- protected setPosition() {
+  protected setPosition() {
     const rect = (this.positionTarget as HTMLElement).getBoundingClientRect();
-    this.style.left = rect.left + 'px';
-    this.style.top = rect.top + rect.height + 'px';
-    this.style.width = rect.width + 'px';
+    this.style.left = `${rect.left}px`;
+    this.style.top = `${rect.top + rect.height}px`;
+    this.style.width = `${rect.width}px`;
     this.style.bottom = 'auto';
     this.style.right = 'auto';
   }

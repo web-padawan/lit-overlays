@@ -4,7 +4,7 @@ interface IdCache {
   overlay?: HTMLElement | null;
 }
 
-interface ListenersMap {
+interface ListenersMap {
   mousedown: Function;
   mouseup: Function;
   keydown: Function;
@@ -16,15 +16,15 @@ export class LitOverlay extends LitElement {
   // Used to instantiate the class.
   static is = 'lit-overlay';
 
-  @property({ type: Boolean }) withBackdrop: boolean = false;
+  @property({ type: Boolean }) withBackdrop = false;
 
-  @property({ type: Boolean }) mouseDownInside: boolean = false;
+  @property({ type: Boolean }) mouseDownInside = false;
 
-  @property({ type: Boolean }) mouseUpInside: boolean = false;
+  @property({ type: Boolean }) mouseUpInside = false;
 
   protected $: IdCache = {};
 
-  protected listeners: ListenersMap = Object.freeze({
+  protected listeners: ListenersMap = Object.freeze({
     mousedown: this.mouseDownListener.bind(this),
     mouseup: this.mouseUpListener.bind(this),
     click: this.outsideClickListener.bind(this),
@@ -74,7 +74,7 @@ export class LitOverlay extends LitElement {
           display: none !important;
         }
 
-        [part="overlay"] {
+        [part='overlay'] {
           -webkit-overflow-scrolling: touch;
           overflow: auto;
           pointer-events: auto;
@@ -87,9 +87,9 @@ export class LitOverlay extends LitElement {
           background: #fff;
         }
 
-        [part="backdrop"] {
+        [part='backdrop'] {
           z-index: -1;
-          content: "";
+          content: '';
           background: rgba(0, 0, 0, 0.5);
           position: fixed;
           top: 0;
@@ -114,7 +114,7 @@ export class LitOverlay extends LitElement {
   }
 
   protected firstUpdated() {
-    this.$.overlay = this.shadowRoot!.getElementById('overlay');
+    this.$.overlay = (this.renderRoot as ShadowRoot).getElementById('overlay');
   }
 
   open() {
@@ -165,7 +165,7 @@ export class LitOverlay extends LitElement {
     this.dispatchEvent(
       new CustomEvent('lit-overlay-outside-click', {
         bubbles: true,
-        detail: {sourceEvent: event}
+        detail: { sourceEvent: event }
       })
     );
   }
@@ -175,7 +175,7 @@ export class LitOverlay extends LitElement {
       this.dispatchEvent(
         new CustomEvent('lit-overlay-escape-press', {
           bubbles: true,
-          detail: {sourceEvent: event}
+          detail: { sourceEvent: event }
         })
       );
     }

@@ -6,18 +6,41 @@
   "author": "Serhii Kulykov <iamkulykov@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "lint": "eslint src --ext .ts",
     "dev": "webpack-dev-server"
   },
   "dependencies": {
     "lit-virtualizer": "^0.3.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
     "awesome-typescript-loader": "^5.2.1",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.0",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.1",
+    "prettier": "^1.18.2",
     "typescript": "^3.5.3",
     "webpack": "^4.39.2",
     "webpack-babel-multi-target-plugin": "^2.3.0-alpha.1",
     "webpack-cli": "^3.3.6",
     "webpack-dev-server": "^3.8.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   }
 }

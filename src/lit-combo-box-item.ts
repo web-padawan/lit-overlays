@@ -2,9 +2,9 @@ import { LitElement, html, css, customElement, property } from 'lit-element';
 
 @customElement('lit-combo-box-item')
 export class LitComboBoxItem extends LitElement {
-  @property({ type: String }) label: string = '';
+  @property({ type: String }) label = '';
 
-  @property({ type: String }) value: string = '';
+  @property({ type: String }) value = '';
 
   static styles = css`
     :host {
@@ -32,9 +32,7 @@ export class LitComboBoxItem extends LitElement {
 
   protected firstUpdated() {
     this.addEventListener('click', () => {
-      this.dispatchEvent(new CustomEvent('lit-combo-box-item-click', {
-        bubbles: true
-      }));
+      this.dispatchEvent(new CustomEvent('lit-combo-box-item-click', { bubbles: true }));
     });
   }
 }
