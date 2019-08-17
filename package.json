@@ -14,12 +14,15 @@
   "scripts": {
     "lint": "eslint src --ext .ts",
     "dev": "webpack-dev-server",
-    "build": "tsc"
+    "build": "tsc",
+    "size:check": "size-limit",
+    "size:why": "size-limit --why"
   },
   "dependencies": {
     "lit-virtualizer": "^0.3.0"
   },
   "devDependencies": {
+    "@size-limit/preset-small-lib": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
     "awesome-typescript-loader": "^5.2.1",
@@ -32,6 +35,7 @@
     "husky": "^3.0.4",
     "lint-staged": "^9.2.1",
     "prettier": "^1.18.2",
+    "size-limit": "^2.1.0",
     "typescript": "^3.5.3",
     "webpack": "^4.39.2",
     "webpack-babel-multi-target-plugin": "^2.3.0-alpha.1",
@@ -49,5 +53,11 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+  "size-limit": [
+    {
+      "path": "lib/lit-combo-box.js",
+      "limit": "20 KB"
+    }
+  ]
 }
