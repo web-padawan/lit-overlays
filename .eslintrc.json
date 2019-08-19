@@ -18,11 +18,6 @@
     "project": "./tsconfig.json"
   },
   "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [ ".ts", ".js" ]
-      }
-    },
     "import/extensions": [ ".ts" ]
   },
   "env": {
