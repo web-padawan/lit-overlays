@@ -1,13 +1,14 @@
 import { LitElement, html, customElement, property, PropertyValues } from 'lit-element';
 import 'lit-virtualizer';
+import { LitVirtualizer } from 'lit-virtualizer';
 import { LitComboBoxOverlay } from './lit-combo-box-overlay';
 import { LitComboBoxItem } from './lit-combo-box-item';
 import { overlay } from './lit-overlay-directive';
 import './lit-combo-box-item';
 
 interface ComboBoxItem {
-  value?: string;
-  label?: string;
+  value: string;
+  label: string;
 }
 
 @customElement('lit-combo-box')
@@ -23,7 +24,7 @@ export class LitComboBox extends LitElement {
   protected renderItem = (item: ComboBoxItem) => {
     const { value, label } = item;
     return html`
-      <lit-combo-box-item value="${value}" label="${label}" class="scroller"></lit-combo-box-item>
+      <lit-combo-box-item .value="${value}" .label="${label}" class="scroller"></lit-combo-box-item>
     `;
   };
 
@@ -80,9 +81,9 @@ export class LitComboBox extends LitElement {
     if (props.has('opened') && this.opened && this.value && this.items) {
       window.requestAnimationFrame(() => {
         setTimeout(() => {
-          // TODO: remove "any" usage once lit-virtualizer ships typings
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const scroller = (this.overlay as LitComboBoxOverlay).querySelector('.scroller') as any;
+          const scroller = (this.overlay as LitComboBoxOverlay).querySelector(
+            '.scroller'
+          ) as LitVirtualizer;
           const index = this.items.findIndex((item: ComboBoxItem) => item.value === this.value);
           if (index > -1) {
             scroller.scrollToIndex(index, 'end');

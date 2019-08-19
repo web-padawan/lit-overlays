@@ -14,9 +14,16 @@
     "noFallthroughCasesInSwitch": true,
     "strict": true,
     "skipLibCheck": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "plugins": [
+      {
+        "name": "ts-lit-plugin",
+        "strict": true
+      }
+    ]
   },
   "include": [
+    "custom_typings/*.d.ts",
     "src/*.ts"
   ],
   "exclude": []

@@ -6,7 +6,7 @@ class LitComboBoxOverlay extends LitOverlay {
   // Used to instantiate the class.
   static is = 'lit-combo-box-overlay';
 
-  @property() positionTarget: HTMLElement | null = null;
+  @property({ attribute: false }) positionTarget: HTMLElement | null = null;
 
   static get styles() {
     return [
