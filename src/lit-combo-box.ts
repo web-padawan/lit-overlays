@@ -11,6 +11,12 @@ interface ComboBoxItem {
   label: string;
 }
 
+declare global {
+  interface HTMLElementTagNameMap {
+    'lit-virtualizer': LitVirtualizer<ComboBoxItem>;
+  }
+}
+
 @customElement('lit-combo-box')
 export class LitComboBox extends LitElement {
   @property({ type: Boolean }) opened = false;
@@ -83,7 +89,7 @@ export class LitComboBox extends LitElement {
         setTimeout(() => {
           const scroller = (this.overlay as LitComboBoxOverlay).querySelector(
             '.scroller'
-          ) as LitVirtualizer;
+          ) as LitVirtualizer<ComboBoxItem>;
           const index = this.items.findIndex((item: ComboBoxItem) => item.value === this.value);
           if (index > -1) {
             scroller.scrollToIndex(index, 'end');

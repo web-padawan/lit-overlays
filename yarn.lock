@@ -4423,29 +4423,30 @@ lit-analyzer@1.1.8, lit-analyzer@^1.1.8:
     vscode-html-languageservice "2.1.12"
     web-component-analyzer "~0.1.11"
 
-lit-element@latest:
+lit-element@^2.0.0:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/lit-element/-/lit-element-2.2.1.tgz#79c94d8cfdc2d73b245656e37991bd1e4811d96f"
   integrity sha512-ipDcgQ1EpW6Va2Z6dWm79jYdimVepO5GL0eYkZrFvdr0OD/1N260Q9DH+K5HXHFrRoC7dOg+ZpED2XE0TgGdXw==
   dependencies:
     lit-html "^1.0.0"
 
-lit-html@^1.0.0, lit-html@latest:
+lit-html@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/lit-html/-/lit-html-1.1.2.tgz#2e3560a7075210243649c888ad738eaf0daa8374"
   integrity sha512-FFlUMKHKi+qG1x1iHNZ1hrtc/zHmfYTyrSvs3/wBTvaNtpZjOZGWzU7efGYVpgp6KvWeKF6ql9/KsCq6Z/mEDA==
 
-lit-virtualizer@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/lit-virtualizer/-/lit-virtualizer-0.3.0.tgz#5a2c1bc8cf6d63da910dffc35cdb457979d427e7"
-  integrity sha512-G+dGJMb9c5bUiUdyh5zzeH/jeOROxtt1CcDOT9PHhwFetLMS4uiaxCqMIibjjQhMm9M1R/DFnkaK+F05zqbk1Q==
+lit-virtualizer@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/lit-virtualizer/-/lit-virtualizer-0.4.0.tgz#c86706a69855e6fdfc2bf70e80db6e83af895ef9"
+  integrity sha512-DyYmk2HO/7UNHvNhjz7SrGNp6QtaSfciHHEwynyZSOqGOylOVCaYFWEIHMol69lswVbZwBbK4D1ueQjb3ReiIg==
   dependencies:
     event-target-shim "^5.0.1"
-    lit-element latest
-    lit-html latest
+    lit-element "^2.0.0"
+    lit-html "^1.0.0"
     resize-observer-polyfill "^1.5.1"
     rollup-plugin-filesize "^6.1.1"
     rollup-plugin-terser "^5.0.0"
+    tslib "^1.10.0"
 
 load-json-file@^2.0.0:
   version "2.0.0"
@@ -7281,7 +7282,7 @@ ts-simple-type@~0.3.5:
   resolved "https://registry.yarnpkg.com/ts-simple-type/-/ts-simple-type-0.3.6.tgz#aa5a107c420c3ebe9cf5de2fe426984d0f77c665"
   integrity sha512-dybO9ebUqOzldR5+SPP1uQSbxl/uiSIvjRC7dFuU45XE7H+4EoQMuxCFKoZj99qEo7pdDWSx52DEQAPZqL3SFg==
 
-tslib@^1.8.1, tslib@^1.9.0:
+tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==

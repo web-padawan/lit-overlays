@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint:eslint": "eslint src --ext .ts",
-    "lint:lit": "lit-analyzer custom_typings src --strict --rules.no-missing-import off",
+    "lint:lit": "lit-analyzer src --strict --rules.no-missing-import off",
     "lint": "npm-run-all --parallel lint:*",
     "dev": "webpack-dev-server",
     "build": "tsc",
@@ -21,7 +21,9 @@
     "size:why": "size-limit --why"
   },
   "dependencies": {
-    "lit-virtualizer": "^0.3.0"
+    "lit-element": "^2.0.0",
+    "lit-html": "^1.0.0",
+    "lit-virtualizer": "^0.4.0"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^2.1.0",
