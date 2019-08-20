@@ -1,54 +1,59 @@
 import { directive, TemplateResult, Part, NodePart, nothing } from 'lit-html';
-import { render } from 'lit-html/lib/shady-render';
 import { LitOverlay } from './lit-overlay';
 
-const teleportCaches = new WeakMap();
+const overlayCaches = new WeakMap();
+const defaultConfig = { component: LitOverlay };
 
-export const overlay = directive((opened: unknown, value, config = {}) => (part: Part) => {
-  if (!(part instanceof NodePart)) {
-    throw new Error('overlay can only be used in text bindings');
-  }
+export const overlay = directive(
+  (opened: unknown, value, config = defaultConfig) => (part: Part) => {
+    if (!(part instanceof NodePart)) {
+      throw new Error('overlay can only be used in text bindings');
+    }
 
-  if (value instanceof TemplateResult) {
-    let template;
-    let teleport;
-    const teleportCache = teleportCaches.get(part);
+    if (value instanceof TemplateResult) {
+      let container;
+      let innerPart;
+      const overlayCache = overlayCaches.get(part);
 
-    if (teleportCache === undefined) {
-      // initialize the template
-      template = part.options.templateFactory(value);
+      if (overlayCache === undefined) {
+        let { component } = config;
 
-      let { component } = config;
+        if (Object.getPrototypeOf(component) !== LitOverlay) {
+          console.warn('Custom overlay component must extend lit-overlay');
+          component = LitOverlay;
+        }
 
-      if (Object.getPrototypeOf(component) !== LitOverlay) {
-        console.warn('Custom overlay component must extend lit-overlay');
-        component = LitOverlay;
+        // create a new overlay
+        container = document.createElement(component.is);
+
+        // configure properties
+        container.withBackdrop = config.backdrop;
+
+        // set the initial value
+        part.setValue(container);
+        part.commit();
+
+        // render the passed template result
+        innerPart = new NodePart(part.options);
+        innerPart.appendInto(container);
+        innerPart.setValue(value);
+        innerPart.commit();
+
+        // save overlay into cache
+        overlayCaches.set(part, { container, innerPart });
+      } else {
+        container = overlayCache.container;
+        innerPart = overlayCache.innerPart;
       }
 
-      // create a new overlay
-      teleport = document.createElement(component.is);
-      teleport.withBackdrop = config.backdrop;
-
-      // save overlay into cache
-      teleportCaches.set(part, { template, teleport });
-
-      // set the initial value
-      part.setValue(teleport);
-    } else {
-      template = teleportCache.template;
-      teleport = teleportCache.teleport;
-    }
-
-    if (opened) {
-      render(value, teleport, {
-        scopeName: teleport.tagName.toLowerCase(),
-        eventContext: teleport.getRootNode().host
-      });
-      teleport.open();
-      part.setValue(nothing);
-    } else if (teleport.parentNode === document.body) {
-      teleport.close();
-      part.setValue(teleport);
+      if (opened) {
+        innerPart.value.update(value.values);
+        container.open();
+        part.setValue(nothing);
+      } else if (container.parentNode === document.body) {
+        container.close();
+        part.setValue(container);
+      }
     }
   }
-});
+);
