@@ -25,8 +25,6 @@ export class LitComboBox extends LitElement {
 
   @property({ type: String }) value = '';
 
-  protected filteredItems = [];
-
   protected renderItem = (item: ComboBoxItem) => {
     const { value, label } = item;
     return html`
@@ -46,7 +44,7 @@ export class LitComboBox extends LitElement {
         this.opened,
         html`
           <lit-virtualizer
-            .items=${this.filteredItems}
+            .items=${this.items}
             .renderItem="${this.renderItem}"
             class="scroller"
           ></lit-virtualizer>
@@ -54,14 +52,6 @@ export class LitComboBox extends LitElement {
         { component: LitComboBoxOverlay }
       )}
     `;
-  }
-
-  protected update(props: PropertyValues) {
-    if (props.has('opened')) {
-      this.filteredItems = this.opened ? this.items : [];
-    }
-
-    super.update(props);
   }
 
   protected firstUpdated() {
