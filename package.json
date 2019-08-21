@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "lint:eslint": "eslint src --ext .ts",
-    "lint:lit": "lit-analyzer src --strict --rules.no-missing-import off",
+    "lint:lit": "lit-analyzer src --strict",
     "lint": "npm-run-all --parallel lint:*",
     "dev": "webpack-dev-server",
     "build": "tsc",
