@@ -44,9 +44,8 @@ export class LitComboBox extends LitElement {
         this.opened,
         html`
           <lit-virtualizer
-            .items=${this.items}
+            .items="${this.items}"
             .renderItem="${this.renderItem}"
-            class="scroller"
           ></lit-virtualizer>
         `,
         { component: LitComboBoxOverlay }
@@ -78,7 +77,7 @@ export class LitComboBox extends LitElement {
       window.requestAnimationFrame(() => {
         setTimeout(() => {
           const scroller = (this.overlay as LitComboBoxOverlay).querySelector(
-            '.scroller'
+            'lit-virtualizer'
           ) as LitVirtualizer<ComboBoxItem>;
           const index = this.items.findIndex((item: ComboBoxItem) => item.value === this.value);
           if (index > -1) {

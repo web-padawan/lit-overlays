@@ -21,7 +21,7 @@ class LitComboBoxOverlay extends LitOverlay {
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
-        ::slotted(.scroller) {
+        ::slotted(lit-virtualizer) {
           min-height: 200px;
         }
       `
