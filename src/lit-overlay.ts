@@ -71,7 +71,9 @@ export class LitOverlay extends LitElement {
 
         :host(:not([opened]):not([closing])),
         :host([hidden]) {
-          display: none !important;
+          width: 0;
+          height: 0;
+          overflow: hidden;
         }
 
         [part='overlay'] {

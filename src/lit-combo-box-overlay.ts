@@ -22,7 +22,11 @@ class LitComboBoxOverlay extends LitOverlay {
         }
 
         ::slotted(lit-virtualizer) {
-          min-height: 200px;
+          height: 200px;
+        }
+
+        :host(:not([opened])) ::slotted(lit-virtualizer) {
+          height: 0;
         }
       `
     ];
