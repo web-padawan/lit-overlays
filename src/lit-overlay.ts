@@ -1,4 +1,13 @@
-import { LitElement, html, css, customElement, property, CSSResultArray } from 'lit-element';
+import { NodePart, nothing } from 'lit-html';
+import {
+  LitElement,
+  html,
+  css,
+  customElement,
+  property,
+  CSSResultArray,
+  PropertyValues
+} from 'lit-element';
 
 interface IdCache {
   overlay?: HTMLElement | null;
@@ -15,6 +24,10 @@ interface ListenersMap {
 export class LitOverlay extends LitElement {
   // Used to instantiate the class.
   static is = 'lit-overlay';
+
+  @property({ type: Boolean, reflect: true }) opened = false;
+
+  @property({ attribute: false }) placeholder?: NodePart = undefined;
 
   @property({ type: Boolean }) withBackdrop = false;
 
@@ -119,16 +132,28 @@ export class LitOverlay extends LitElement {
     this.$.overlay = (this.renderRoot as ShadowRoot).getElementById('overlay');
   }
 
-  open() {
-    document.body.appendChild(this);
-    this.addGlobalListeners();
-    this.setAttribute('opened', '');
+  updated(props: PropertyValues) {
+    if (props.has('opened')) {
+      if (this.opened) {
+        this.open();
+      } else if (props.get('opened')) {
+        this.close();
+      }
+    }
   }
 
-  close() {
+  protected open() {
+    document.body.appendChild(this);
+    this.addGlobalListeners();
+    // set empty value to placeholder
+    (this.placeholder as NodePart).setValue(nothing);
+  }
+
+  protected close() {
     document.body.removeChild(this);
     this.removeGlobalListeners();
-    this.removeAttribute('opened');
+    // teleport back to placeholder
+    (this.placeholder as NodePart).setValue(this);
   }
 
   protected addGlobalListeners() {

@@ -1,4 +1,4 @@
-import { css, customElement, property } from 'lit-element';
+import { css, customElement, property, PropertyValues } from 'lit-element';
 import { LitOverlay } from './lit-overlay';
 
 @customElement('lit-combo-box-overlay')
@@ -34,12 +34,13 @@ class LitComboBoxOverlay extends LitOverlay {
 
   protected boundSetPosition = this.setPosition.bind(this);
 
-  open() {
-    super.open();
-
-    window.requestAnimationFrame(() => {
-      this.setPosition();
-    });
+  updated(props: PropertyValues) {
+    super.updated(props);
+    if (props.has('opened') && this.opened) {
+      window.requestAnimationFrame(() => {
+        this.setPosition();
+      });
+    }
   }
 
   connectedCallback() {

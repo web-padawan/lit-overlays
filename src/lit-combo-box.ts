@@ -3,7 +3,7 @@ import 'lit-virtualizer';
 import { LitVirtualizer } from 'lit-virtualizer';
 import { LitComboBoxOverlay } from './lit-combo-box-overlay';
 import { LitComboBoxItem } from './lit-combo-box-item';
-import { overlay } from './lit-overlay-directive';
+import { portal } from './lit-portal-directive';
 import './lit-combo-box-item';
 
 interface ComboBoxItem {
@@ -40,7 +40,7 @@ export class LitComboBox extends LitElement {
         <input type="text" .value="${this.value}" @click="${this.toggle}" />
       </label>
 
-      ${overlay(
+      ${portal(
         this.opened,
         html`
           <lit-virtualizer
