@@ -147,6 +147,7 @@ export class LitOverlay extends LitElement {
     this.addGlobalListeners();
     // set empty value to placeholder
     (this.placeholder as NodePart).setValue(nothing);
+    (this.placeholder as NodePart).commit();
   }
 
   protected close() {
@@ -154,6 +155,7 @@ export class LitOverlay extends LitElement {
     this.removeGlobalListeners();
     // teleport back to placeholder
     (this.placeholder as NodePart).setValue(this);
+    (this.placeholder as NodePart).commit();
   }
 
   protected addGlobalListeners() {

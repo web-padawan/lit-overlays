@@ -16,12 +16,7 @@ export const portal = directive(
       const overlayCache = overlayCaches.get(part);
 
       if (overlayCache === undefined) {
-        let { component } = config;
-
-        if (Object.getPrototypeOf(component) !== LitOverlay) {
-          console.warn('Custom overlay component must extend lit-overlay');
-          component = LitOverlay;
-        }
+        const { component } = config;
 
         // create a new overlay
         overlay = document.createElement(component.is);
