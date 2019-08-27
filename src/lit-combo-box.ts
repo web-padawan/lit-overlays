@@ -1,21 +1,5 @@
-import { LitElement, html, customElement, property, PropertyValues } from 'lit-element';
-import 'lit-virtualizer';
-import { LitVirtualizer } from 'lit-virtualizer';
-import { LitComboBoxOverlay } from './lit-combo-box-overlay';
-import { LitComboBoxItem } from './lit-combo-box-item';
-import { portal } from './lit-portal-directive';
-import './lit-combo-box-item';
-
-interface ComboBoxItem {
-  value: string;
-  label: string;
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    'lit-virtualizer': LitVirtualizer<ComboBoxItem>;
-  }
-}
+import { LitElement, html, customElement, property } from 'lit-element';
+import './lit-combo-box-dropdown';
 
 @customElement('lit-combo-box')
 export class LitComboBox extends LitElement {
@@ -25,14 +9,7 @@ export class LitComboBox extends LitElement {
 
   @property({ type: String }) value = '';
 
-  protected renderItem = (item: ComboBoxItem) => {
-    const { value, label } = item;
-    return html`
-      <lit-combo-box-item .value="${value}" .label="${label}" class="scroller"></lit-combo-box-item>
-    `;
-  };
-
-  protected overlay: LitComboBoxOverlay | null = null;
+  @property({ attribute: false }) protected inputElement: HTMLElement | null = null;
 
   protected render() {
     return html`
@@ -40,55 +17,30 @@ export class LitComboBox extends LitElement {
         <input type="text" .value="${this.value}" @click="${this.toggle}" />
       </label>
 
-      ${portal(
-        this.opened,
-        html`
-          <lit-virtualizer
-            .items="${this.items}"
-            .renderItem="${this.renderItem}"
-          ></lit-virtualizer>
-        `,
-        { component: LitComboBoxOverlay }
-      )}
+      <lit-combo-box-dropdown
+        .value="${this.value}"
+        .opened="${this.opened}"
+        .items="${this.items}"
+        .positionTarget="${this.inputElement}"
+        @opened-changed="${this.onOpenedChanged}"
+        @value-changed="${this.onValueChanged}"
+      ></lit-combo-box-dropdown>
     `;
   }
 
   protected firstUpdated() {
-    this.overlay = this.renderRoot.querySelector(LitComboBoxOverlay.is) as LitComboBoxOverlay;
-
-    this.overlay.addEventListener('lit-overlay-outside-click', () => {
-      this.opened = false;
-    });
-
-    this.overlay.addEventListener('lit-overlay-escape-press', () => {
-      this.opened = false;
-    });
-
-    this.overlay.addEventListener('lit-combo-box-item-click', (event: Event) => {
-      this.opened = false;
-      this.value = (event.target as LitComboBoxItem).value;
-    });
-
-    this.overlay.positionTarget = this.renderRoot.querySelector('input');
-  }
-
-  protected updated(props: PropertyValues) {
-    if (props.has('opened') && this.opened && this.value && this.items) {
-      window.requestAnimationFrame(() => {
-        setTimeout(() => {
-          const scroller = (this.overlay as LitComboBoxOverlay).querySelector(
-            'lit-virtualizer'
-          ) as LitVirtualizer<ComboBoxItem>;
-          const index = this.items.findIndex((item: ComboBoxItem) => item.value === this.value);
-          if (index > -1) {
-            scroller.scrollToIndex(index, 'end');
-          }
-        });
-      });
-    }
+    this.inputElement = this.renderRoot.querySelector('input');
   }
 
   protected toggle() {
     this.opened = !this.opened;
+  }
+
+  protected onOpenedChanged(event: CustomEvent) {
+    this.opened = event.detail.value;
+  }
+
+  protected onValueChanged(event: CustomEvent) {
+    this.value = event.detail.value;
   }
 }
