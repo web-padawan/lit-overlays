@@ -1,4 +1,4 @@
-import { property, PropertyValues, css, CSSResultArray } from 'lit-element';
+import { property, PropertyValues, css } from 'lit-element';
 import { LitOverlay } from './lit-overlay';
 
 interface AlignmentProperties {
@@ -117,7 +117,7 @@ export abstract class LitPositionedOverlay extends LitOverlay {
           left: auto;
         }
       `
-    ] as CSSResultArray;
+    ];
   }
 
   updated(props: PropertyValues) {
