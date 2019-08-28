@@ -13,7 +13,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "strict": true,
-    "skipLibCheck": true,
     "experimentalDecorators": true,
     "plugins": [
       {
@@ -22,7 +21,7 @@
       },
       {
         "transform": "@zoltu/typescript-transformer-append-js-extension/output/index.js",
-        "after": true,
+        "after": true
       }
     ]
   },
