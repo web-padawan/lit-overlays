@@ -11,6 +11,7 @@ import {
 
 interface IdCache {
   overlay?: HTMLElement | null;
+  content?: HTMLElement | null;
 }
 
 interface ListenersMap {
@@ -130,6 +131,7 @@ export class LitOverlay extends LitElement {
 
   protected firstUpdated() {
     this.$.overlay = (this.renderRoot as ShadowRoot).getElementById('overlay');
+    this.$.content = (this.renderRoot as ShadowRoot).getElementById('content');
   }
 
   updated(props: PropertyValues) {

@@ -9,6 +9,11 @@ class LitComboBoxOverlay extends LitDropdownOverlay {
     return [
       super.styles,
       css`
+        [part='overlay'] {
+          max-height: 200px;
+          overflow: hidden;
+        }
+
         ::slotted(lit-virtualizer) {
           height: 200px;
         }

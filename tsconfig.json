@@ -7,7 +7,7 @@
     "inlineSources": true,
     "module": "esNext",
     "target": "es2017",
-    "lib": ["es2017", "dom"],
+    "lib": ["esnext", "es2017", "dom"],
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
