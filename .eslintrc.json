@@ -5,11 +5,13 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/typescript",
     "plugin:lit/all",
+    "plugin:wc/recommended",
     "plugin:prettier/recommended",
     "prettier/@typescript-eslint"
   ],
   "plugins": [
     "@typescript-eslint",
+    "wc",
     "prettier"
   ],
   "parser": "@typescript-eslint/parser",
