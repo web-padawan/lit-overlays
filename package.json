@@ -16,7 +16,7 @@
     "lint:lit": "lit-analyzer src --strict",
     "lint": "npm-run-all --parallel lint:*",
     "dev": "webpack-dev-server",
-    "build": "tsc",
+    "build": "ttsc",
     "size:check": "size-limit",
     "size:why": "size-limit --why"
   },
