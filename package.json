@@ -23,7 +23,8 @@
   "dependencies": {
     "lit-element": "^2.0.0",
     "lit-html": "^1.0.0",
-    "lit-virtualizer": "^0.4.0"
+    "lit-virtualizer": "^0.4.0",
+    "tslib": "^1.10.0"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^2.1.0",
