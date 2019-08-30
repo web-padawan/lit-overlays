@@ -1,12 +1,12 @@
 {
-  "name": "lit-combo-box",
+  "name": "lit-core",
   "version": "0.1.0",
-  "description": "Prototype combo-box with lit-virtualizer",
+  "description": "Prototyping components with lit-element",
   "keywords": [],
   "author": "Serhii Kulykov <iamkulykov@gmail.com>",
   "license": "MIT",
-  "main": "lib/lit-combo-box.js",
-  "module": "lib/lit-combo-box.js",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
   "files": [
     "lib",
     "src"
@@ -68,7 +68,7 @@
   },
   "size-limit": [
     {
-      "path": "lib/lit-combo-box.js",
+      "path": "lib/index.js",
       "limit": "20 KB"
     }
   ]

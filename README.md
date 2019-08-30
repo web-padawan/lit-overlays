@@ -1,6 +1,10 @@
-# &lt;lit-combo-box&gt;
+# lit-core
 
-Prototyping a combo-box component using [lit-virtualizer](https://github.com/PolymerLabs/uni-virtualizer/tree/master/packages/lit-virtualizer).
+Prototyping a core components using LitElement.
+
+- `<lit-combo-box>` component with infinite scroll using [lit-virtualizer](https://github.com/PolymerLabs/uni-virtualizer/tree/master/packages/lit-virtualizer)
+- `<lit-select>` component similar to native `<select>` element
+
 
 ## Install dependencies
 
