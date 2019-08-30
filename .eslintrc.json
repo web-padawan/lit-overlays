@@ -31,6 +31,15 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "import/no-duplicates": "off",
     "import/prefer-default-export": "off",
-    "no-console": [ "error", { "allow": ["warn"] } ]
+    "lit/no-template-map": "off",
+    "class-methods-use-this": [
+      "error",
+      {
+        "exceptMethods": [ "render" ]
+      }
+    ],
+    "no-console": [ "error", { "allow": ["warn"] } ],
+    "no-param-reassign": "off",
+    "no-underscore-dangle": "off"
   }
 }
