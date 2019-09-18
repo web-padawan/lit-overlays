@@ -1,19 +1,11 @@
 import { property, PropertyValues } from 'lit-element';
 import { LitOverlay } from './lit-overlay';
 
-interface AlignmentProperties {
-  start: 'top' | 'left';
-  end: 'right' | 'bottom';
-}
+type PositionProp = 'top' | 'right' | 'bottom' | 'left';
 
-type AlignmentProperty = 'top' | 'right' | 'bottom' | 'left';
+type PositionPropNames = { [key in 'start' | 'end']: PositionProp };
 
-type AlignmentMargins = { [s: string]: number };
-
-const dimensions = {
-  HORIZONTAL: { start: 'left', end: 'right' } as AlignmentProperties,
-  VERTICAL: { start: 'top', end: 'bottom' } as AlignmentProperties
-};
+type PositionPropValues = { [key in PositionProp]: number };
 
 const $margins = new WeakMap();
 
@@ -25,10 +17,10 @@ const getPositionInOneDimension = (
   targetRect: ClientRect,
   contentSize: number,
   viewportSize: number,
-  margins: AlignmentMargins,
+  margins: PositionPropValues,
   isDefaultStart: boolean,
   noOverlap: boolean,
-  propNames: AlignmentProperties
+  propNames: PositionPropNames
 ) => {
   const { start, end } = propNames;
   const startProp = noOverlap ? end : start;
@@ -101,6 +93,7 @@ export abstract class LitPositionedOverlay extends LitOverlay {
   }
 
   protected getHorizontalPosition(targetRect: ClientRect, rtl: boolean) {
+    const propNames: PositionPropNames = { start: 'left', end: 'right' };
     const contentWidth = (this.$.overlay as HTMLElement).offsetWidth;
     const viewportWidth = Math.min(window.innerWidth, document.documentElement.clientWidth);
     const defaultAlignLeft = !!(
@@ -115,11 +108,12 @@ export abstract class LitPositionedOverlay extends LitOverlay {
       $margins.get(this),
       defaultAlignLeft,
       this.noHorizontalOverlap,
-      dimensions.HORIZONTAL
+      propNames
     );
   }
 
   protected getVerticalPosition(targetRect: ClientRect) {
+    const propNames: PositionPropNames = { start: 'top', end: 'bottom' };
     const contentHeight = (this.$.overlay as HTMLElement).offsetHeight;
     const viewportHeight = Math.min(window.innerHeight, document.documentElement.clientHeight);
     const defaultAlignTop = this.verticalAlign === 'top';
@@ -131,19 +125,19 @@ export abstract class LitPositionedOverlay extends LitOverlay {
       $margins.get(this),
       defaultAlignTop,
       this.noVerticalOverlap,
-      dimensions.VERTICAL
+      propNames
     );
   }
 
   protected setPosition() {
     const computedStyle = getComputedStyle(this);
 
-    const props: Array<AlignmentProperty> = ['top', 'bottom', 'left', 'right'];
+    const props: Array<PositionProp> = ['top', 'right', 'bottom', 'left'];
 
     if (!$margins.has(this)) {
-      const margins: AlignmentMargins = {};
+      const margins = {};
       props.forEach(propName => {
-        margins[propName] = parseInt(computedStyle[propName] as string, 10);
+        (margins as PositionPropValues)[propName] = parseInt(computedStyle[propName] as string, 10);
       });
       $margins.set(this, margins);
     }
@@ -159,9 +153,9 @@ export abstract class LitPositionedOverlay extends LitOverlay {
 
     props.forEach(prop => {
       if (position[prop] !== undefined) {
-        this.style[prop as AlignmentProperty] = position[prop];
+        this.style[prop as PositionProp] = position[prop];
       } else {
-        this.style[prop as AlignmentProperty] = '';
+        this.style[prop as PositionProp] = '';
       }
     });
 
