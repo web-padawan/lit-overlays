@@ -1,4 +1,4 @@
-import { property, PropertyValues, css } from 'lit-element';
+import { property, PropertyValues } from 'lit-element';
 import { LitOverlay } from './lit-overlay';
 
 interface AlignmentProperties {
@@ -8,87 +8,53 @@ interface AlignmentProperties {
 
 type AlignmentProperty = 'top' | 'right' | 'bottom' | 'left';
 
+type AlignmentMargins = { [s: string]: number };
+
 const dimensions = {
   HORIZONTAL: { start: 'left', end: 'right' } as AlignmentProperties,
   VERTICAL: { start: 'top', end: 'bottom' } as AlignmentProperties
 };
 
-const shouldAlignDefault = (
-  isCurrentDefault: boolean,
-  overlaySize: number,
-  contentSize: number,
-  spaceOnDefaultSide: number,
-  spaceOnOtherSide: number
-) => {
-  if (spaceOnDefaultSide > spaceOnOtherSide) {
-    return true;
-  }
+const $margins = new WeakMap();
 
-  const fitsOnCurrentSide = contentSize < overlaySize;
-
-  if (isCurrentDefault) {
-    return fitsOnCurrentSide;
-  }
-
-  if (!fitsOnCurrentSide) {
-    return false;
-  }
-
-  return contentSize < spaceOnDefaultSide;
-};
-
-const getSpace = (
-  targetRect: ClientRect,
-  viewportSize: number,
-  isDefaultStart: boolean,
-  startProp: AlignmentProperty,
-  endProp: AlignmentProperty
-) => {
-  const spaceForStart = viewportSize - targetRect[startProp];
-  const spaceForEnd = targetRect[endProp];
-
-  return isDefaultStart
-    ? { defaultSpace: spaceForStart, otherSpace: spaceForEnd }
-    : { defaultSpace: spaceForEnd, otherSpace: spaceForStart };
-};
-
+/**
+ * Returns an object with CSS position properties to set,
+ * e.g. { top: "100px", bottom: "" }
+ */
 const getPositionInOneDimension = (
   targetRect: ClientRect,
-  overlaySize: number,
   contentSize: number,
   viewportSize: number,
+  margins: AlignmentMargins,
   isDefaultStart: boolean,
-  isCurrentStart: boolean,
   noOverlap: boolean,
   propNames: AlignmentProperties
 ) => {
-  const startProp = noOverlap ? propNames.end : propNames.start;
-  const endProp = noOverlap ? propNames.start : propNames.end;
+  const { start, end } = propNames;
+  const startProp = noOverlap ? end : start;
+  const endProp = noOverlap ? start : end;
 
-  const { defaultSpace, otherSpace } = getSpace(
-    targetRect,
-    viewportSize,
-    isDefaultStart,
-    startProp,
-    endProp
-  );
+  const spaceForStart = viewportSize - targetRect[startProp] - margins[end];
+  const spaceForEnd = targetRect[endProp] - margins[start];
 
-  const isShouldAlignDefault = shouldAlignDefault(
-    isCurrentStart === isDefaultStart,
-    overlaySize,
-    contentSize,
-    defaultSpace,
-    otherSpace
-  );
+  const defaultSpace = isDefaultStart ? spaceForStart : spaceForEnd;
+  const otherSpace = isDefaultStart ? spaceForEnd : spaceForStart;
 
-  const shouldAlignStart =
-    (isShouldAlignDefault && isDefaultStart) || (!isShouldAlignDefault && !isDefaultStart);
+  const shouldAlignDefault = defaultSpace > otherSpace || defaultSpace > contentSize;
 
-  if (shouldAlignStart) {
-    return [propNames.start, targetRect[startProp]];
-  }
+  const shouldAlignStart = isDefaultStart === shouldAlignDefault;
 
-  return [propNames.end, viewportSize - targetRect[endProp]];
+  const cssPropToSet = shouldAlignStart ? start : end;
+  const cssPropToClear = shouldAlignStart ? end : start;
+
+  const cssPropValueToSet = `${
+    shouldAlignStart ? targetRect[startProp] : viewportSize - targetRect[startProp]
+  }px`;
+
+  const props: { [s: string]: string } = {};
+  props[cssPropToSet] = cssPropValueToSet;
+  props[cssPropToClear] = '';
+  return props;
 };
 
 export abstract class LitPositionedOverlay extends LitOverlay {
@@ -105,20 +71,6 @@ export abstract class LitPositionedOverlay extends LitOverlay {
   @property({ type: Boolean }) fitWidth = false;
 
   protected boundUpdatePosition = this.updatePosition.bind(this);
-
-  static get styles() {
-    return [
-      super.styles,
-      css`
-        :host {
-          top: auto;
-          right: auto;
-          bottom: auto;
-          left: auto;
-        }
-      `
-    ];
-  }
 
   updated(props: PropertyValues) {
     super.updated(props);
@@ -149,59 +101,65 @@ export abstract class LitPositionedOverlay extends LitOverlay {
   }
 
   protected getHorizontalPosition(targetRect: ClientRect, rtl: boolean) {
-    const overlayWidth = this.clientWidth;
-    const contentWidth = (this.$.content as HTMLElement).clientWidth;
+    const contentWidth = (this.$.overlay as HTMLElement).offsetWidth;
     const viewportWidth = Math.min(window.innerWidth, document.documentElement.clientWidth);
     const defaultAlignLeft = !!(
       (!rtl && this.horizontalAlign === 'start') ||
       (rtl && this.horizontalAlign === 'end')
     );
-    const currentAlignLeft = !!this.style.left;
 
     return getPositionInOneDimension(
       targetRect,
-      overlayWidth,
       contentWidth,
       viewportWidth,
+      $margins.get(this),
       defaultAlignLeft,
-      currentAlignLeft,
       this.noHorizontalOverlap,
       dimensions.HORIZONTAL
     );
   }
 
   protected getVerticalPosition(targetRect: ClientRect) {
-    const overlayHeight = this.clientHeight;
-    const contentHeight = (this.$.content as HTMLElement).clientHeight;
+    const contentHeight = (this.$.overlay as HTMLElement).offsetHeight;
     const viewportHeight = Math.min(window.innerHeight, document.documentElement.clientHeight);
     const defaultAlignTop = this.verticalAlign === 'top';
-    const currentAlignTop = !!this.style.top;
 
     return getPositionInOneDimension(
       targetRect,
-      overlayHeight,
       contentHeight,
       viewportHeight,
+      $margins.get(this),
       defaultAlignTop,
-      currentAlignTop,
       this.noVerticalOverlap,
       dimensions.VERTICAL
     );
   }
 
   protected setPosition() {
+    const computedStyle = getComputedStyle(this);
+
+    const props: Array<AlignmentProperty> = ['top', 'bottom', 'left', 'right'];
+
+    if (!$margins.has(this)) {
+      const margins: AlignmentMargins = {};
+      props.forEach(propName => {
+        margins[propName] = parseInt(computedStyle[propName] as string, 10);
+      });
+      $margins.set(this, margins);
+    }
+
     const targetRect = (this.positionTarget as HTMLElement).getBoundingClientRect();
 
-    const rtl = getComputedStyle(this).direction === 'rtl';
+    const rtl = computedStyle.direction === 'rtl';
 
-    const position = Object.fromEntries([
-      this.getHorizontalPosition(targetRect, rtl),
-      this.getVerticalPosition(targetRect)
-    ]);
+    const position = {
+      ...this.getHorizontalPosition(targetRect, rtl),
+      ...this.getVerticalPosition(targetRect)
+    };
 
-    ['left', 'right', 'top', 'bottom'].forEach(prop => {
+    props.forEach(prop => {
       if (position[prop] !== undefined) {
-        this.style[prop as AlignmentProperty] = `${position[prop]}px`;
+        this.style[prop as AlignmentProperty] = position[prop];
       } else {
         this.style[prop as AlignmentProperty] = '';
       }
