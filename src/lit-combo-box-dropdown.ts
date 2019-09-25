@@ -12,12 +12,6 @@ interface ComboBoxItem {
   label: string;
 }
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'lit-virtualizer': LitVirtualizer<ComboBoxItem>;
-  }
-}
-
 @customElement('lit-combo-box-dropdown')
 export class LitComboBoxDropdown extends LitElement {
   @property({ type: Boolean }) opened = false;
