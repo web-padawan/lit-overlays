@@ -1,7 +1,7 @@
 {
-  "name": "lit-core",
+  "name": "lit-overlays",
   "version": "0.1.0",
-  "description": "Prototyping components with lit-element",
+  "description": "Prototyping overlay components with lit-element",
   "keywords": [],
   "author": "Serhii Kulykov <iamkulykov@gmail.com>",
   "license": "MIT",
