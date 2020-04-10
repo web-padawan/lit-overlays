@@ -39,7 +39,13 @@ export class LitItem extends LitItemBase {
     super.firstUpdated();
 
     this.addEventListener('click', () => {
-      this.dispatchEvent(new CustomEvent('lit-item-click', { bubbles: true }));
+      this.dispatchEvent(
+        new CustomEvent('lit-item-click', {
+          detail: { value: this.getAttribute('value') },
+          bubbles: true,
+          composed: true
+        })
+      );
     });
   }
 }

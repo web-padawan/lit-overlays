@@ -1,6 +1,8 @@
-import { LitElement, html, customElement, property, TemplateResult } from 'lit-element';
-import { LitSelectDropdown } from './lit-select-dropdown';
+import { LitElement, html, customElement, property } from 'lit-element';
 import './lit-select-dropdown';
+import './lit-list-box';
+import './lit-item';
+import { renderer } from './renderer';
 
 @customElement('lit-select')
 export class LitSelect extends LitElement {
@@ -23,11 +25,23 @@ export class LitSelect extends LitElement {
       <lit-select-dropdown
         .value="${this.value}"
         .opened="${this.opened}"
-        .items="${this.items}"
         .positionTarget="${this.inputElement}"
         @opened-changed="${this.onOpenedChanged}"
         @value-changed="${this.onValueChanged}"
-      ></lit-select-dropdown>
+      >
+        ${renderer(
+          this.items,
+          () => html`
+            <lit-list-box>
+              ${this.items.map(
+                (item: { label: string; value: string }) => html`
+                  <lit-item value="${item.value}">${item.label}</lit-item>
+                `
+              )}
+            </lit-list-box>
+          `
+        )}
+      </lit-select-dropdown>
     `;
   }
 
@@ -46,13 +60,5 @@ export class LitSelect extends LitElement {
 
   protected onValueChanged(event: CustomEvent) {
     this.value = event.detail.value;
-  }
-
-  get renderItem() {
-    return (this.dropdownElement as LitSelectDropdown).renderItem;
-  }
-
-  set renderItem(value: (item: unknown) => TemplateResult) {
-    (this.dropdownElement as LitSelectDropdown).renderItem = value;
   }
 }

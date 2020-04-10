@@ -2,12 +2,11 @@ import { LitElement, html, customElement, property, PropertyValues } from 'lit-e
 import 'lit-virtualizer';
 import { LitVirtualizer } from 'lit-virtualizer';
 import { LitComboBoxOverlay } from './lit-combo-box-overlay';
-import { LitComboBoxItem } from './lit-combo-box-item';
-import { portal } from './lit-portal-directive';
+import { OverlayRenderer } from './lit-overlay';
 import './lit-combo-box-item';
 import { notify } from './utils/notify';
 
-interface ComboBoxItem {
+export interface ComboBoxItem {
   value: string;
   label: string;
 }
@@ -22,52 +21,33 @@ export class LitComboBoxDropdown extends LitElement {
 
   @property({ attribute: false }) positionTarget: HTMLElement | null = null;
 
-  protected renderItem = (item: ComboBoxItem) => {
-    const { value, label } = item;
-    return html`
-      <lit-combo-box-item .value="${value}" .label="${label}" class="scroller"></lit-combo-box-item>
-    `;
-  };
+  @property({ attribute: false, hasChanged: () => true }) renderer?: OverlayRenderer;
 
   protected overlay: LitComboBoxOverlay | null = null;
 
   protected render() {
     return html`
-      ${portal(
-        this.opened,
-        html`
-          <lit-virtualizer
-            .items="${this.items}"
-            .renderItem="${this.renderItem}"
-          ></lit-virtualizer>
-        `,
-        { component: LitComboBoxOverlay }
-      )}
+      <lit-combo-box-overlay
+        .opened="${this.opened}"
+        .renderer="${this.renderer}"
+        .owner="${this}"
+        .positionTarget="${this.positionTarget}"
+        @lit-overlay-outside-click="${this._onOutsideClick}"
+        @lit-overlay-escape-press="${this._onEscapePress}"
+        @lit-combo-box-item-click="${this._onItemClick}"
+      ></lit-combo-box-overlay>
     `;
   }
 
   protected firstUpdated() {
     this.overlay = this.renderRoot.querySelector(LitComboBoxOverlay.is) as LitComboBoxOverlay;
-
-    this.overlay.addEventListener('lit-overlay-outside-click', () => {
-      notify(this, 'opened', false);
-    });
-
-    this.overlay.addEventListener('lit-overlay-escape-press', () => {
-      notify(this, 'opened', false);
-    });
-
-    this.overlay.addEventListener('lit-combo-box-item-click', (event: Event) => {
-      notify(this, 'opened', false);
-      notify(this, 'value', (event.target as LitComboBoxItem).value);
-    });
   }
 
   protected updated(props: PropertyValues) {
     if (props.has('opened') && this.opened && this.value && this.items) {
       window.requestAnimationFrame(() => {
         setTimeout(() => {
-          const scroller = (this.overlay as LitComboBoxOverlay).querySelector(
+          const scroller = (this.overlay as LitComboBoxOverlay).renderRoot.querySelector(
             'lit-virtualizer'
           ) as LitVirtualizer<ComboBoxItem>;
           const index = this.items.findIndex((item: ComboBoxItem) => item.value === this.value);
@@ -77,9 +57,18 @@ export class LitComboBoxDropdown extends LitElement {
         });
       });
     }
+  }
 
-    if (props.has('positionTarget') && this.overlay) {
-      this.overlay.positionTarget = this.positionTarget;
-    }
+  private _onOutsideClick() {
+    notify(this, 'opened', false);
+  }
+
+  private _onEscapePress() {
+    notify(this, 'opened', false);
+  }
+
+  private _onItemClick(event: CustomEvent) {
+    notify(this, 'opened', false);
+    notify(this, 'value', event.detail.value);
   }
 }

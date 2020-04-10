@@ -1,7 +1,8 @@
-import { css } from 'lit-element';
+import { css, customElement } from 'lit-element';
 import { LitDropdownOverlay } from './lit-dropdown-overlay';
 
-class LitSelectOverlay extends LitDropdownOverlay {
+@customElement('lit-select-overlay')
+export class LitSelectOverlay extends LitDropdownOverlay {
   // Used to instantiate the class.
   static is = 'lit-select-overlay';
 
@@ -23,6 +24,8 @@ class LitSelectOverlay extends LitDropdownOverlay {
   }
 }
 
-customElements.define(LitSelectOverlay.is, LitSelectOverlay);
-
-export { LitSelectOverlay };
+declare global {
+  interface HTMLElementTagNameMap {
+    'lit-select-overlay': LitSelectOverlay;
+  }
+}

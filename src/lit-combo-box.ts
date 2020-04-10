@@ -1,5 +1,9 @@
 import { LitElement, html, customElement, property } from 'lit-element';
+import 'lit-virtualizer';
 import './lit-combo-box-dropdown';
+import { ComboBoxItem } from './lit-combo-box-dropdown';
+import './lit-combo-box-item';
+import { renderer } from './renderer';
 
 @customElement('lit-combo-box')
 export class LitComboBox extends LitElement {
@@ -10,6 +14,13 @@ export class LitComboBox extends LitElement {
   @property({ type: String }) value = '';
 
   @property({ attribute: false }) protected inputElement: HTMLElement | null = null;
+
+  protected renderItem = (item: ComboBoxItem) => {
+    const { value, label } = item;
+    return html`
+      <lit-combo-box-item value="${value}" .label="${label}" class="scroller"></lit-combo-box-item>
+    `;
+  };
 
   protected render() {
     return html`
@@ -24,7 +35,17 @@ export class LitComboBox extends LitElement {
         .positionTarget="${this.inputElement}"
         @opened-changed="${this.onOpenedChanged}"
         @value-changed="${this.onValueChanged}"
-      ></lit-combo-box-dropdown>
+      >
+        ${renderer(
+          this.items,
+          () => html`
+            <lit-virtualizer
+              .items="${this.items}"
+              .renderItem="${this.renderItem}"
+            ></lit-virtualizer>
+          `
+        )}
+      </lit-combo-box-dropdown>
     `;
   }
 

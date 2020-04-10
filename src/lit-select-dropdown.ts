@@ -1,86 +1,64 @@
 import { LitElement, html, customElement, property, PropertyValues } from 'lit-element';
 import { LitSelectOverlay } from './lit-select-overlay';
-import { LitListBox } from './lit-list-box';
-import { LitItem } from './lit-item';
-import { portal } from './lit-portal-directive';
-import './lit-list-box';
-import './lit-item';
+import './lit-select-overlay';
+import { OverlayRenderer } from './lit-overlay';
 import { notify } from './utils/notify';
-
-const $renderItem = Symbol('renderItem');
 
 @customElement('lit-select-dropdown')
 export class LitSelectDropdown extends LitElement {
   @property({ type: Boolean }) opened = false;
 
-  @property({ type: Array }) items = [];
-
   @property({ type: String }) value = '';
 
   @property({ attribute: false }) positionTarget: HTMLElement | null = null;
 
-  protected overlay: LitSelectOverlay | null = null;
+  @property({ attribute: false, hasChanged: () => true }) renderer?: OverlayRenderer;
 
-  protected [$renderItem] = (item: unknown) => html`
-    <lit-item>${item}</lit-item>
-  `;
+  protected overlay?: LitSelectOverlay;
 
   protected render() {
     return html`
-      ${portal(
-        this.opened,
-        html`
-          <lit-list-box>
-            ${this.items.map(this[$renderItem])}
-          </lit-list-box>
-        `,
-        { component: LitSelectOverlay }
-      )}
+      <lit-select-overlay
+        .opened="${this.opened}"
+        .owner="${this}"
+        .renderer="${this.renderer}"
+        .positionTarget="${this.positionTarget}"
+        @lit-overlay-outside-click="${this._onOutsideClick}"
+        @lit-overlay-escape-press="${this._onEscapePress}"
+        @lit-item-click="${this._onItemClick}"
+      ></lit-select-overlay>
     `;
   }
 
   protected firstUpdated() {
-    this.overlay = this.renderRoot.querySelector(LitSelectOverlay.is) as LitSelectOverlay;
-
-    this.overlay.addEventListener('lit-overlay-outside-click', () => {
-      notify(this, 'opened', false);
-    });
-
-    this.overlay.addEventListener('lit-overlay-escape-press', () => {
-      notify(this, 'opened', false);
-    });
-
-    this.overlay.addEventListener('lit-item-click', (event: Event) => {
-      notify(this, 'opened', false);
-      notify(this, 'value', (event.target as LitItem).value);
-    });
+    this.overlay = this.renderRoot.querySelector('lit-select-overlay') as LitSelectOverlay;
   }
 
   protected updated(props: PropertyValues) {
-    if (props.has('positionTarget') && this.overlay) {
-      this.overlay.positionTarget = this.positionTarget;
-    }
-
     if (props.has('opened') && this.opened) {
       window.requestAnimationFrame(() => {
         setTimeout(() => {
-          const listBox = (this.overlay as LitSelectOverlay).querySelector(
-            'lit-list-box'
-          ) as LitListBox;
-          listBox.focus();
+          if (this.overlay) {
+            const listBox = this.overlay.querySelector('lit-list-box') as HTMLElement;
+            if (listBox) {
+              listBox.focus();
+            }
+          }
         });
       });
     }
   }
 
-  get renderItem() {
-    return this[$renderItem];
+  private _onOutsideClick() {
+    notify(this, 'opened', false);
   }
 
-  set renderItem(renderItem) {
-    if (renderItem !== this.renderItem) {
-      this[$renderItem] = renderItem;
-      this.requestUpdate();
-    }
+  private _onEscapePress() {
+    notify(this, 'opened', false);
+  }
+
+  private _onItemClick(event: CustomEvent) {
+    notify(this, 'opened', false);
+    notify(this, 'value', event.detail.value);
   }
 }

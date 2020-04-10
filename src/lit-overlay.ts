@@ -1,4 +1,3 @@
-import { NodePart, nothing } from 'lit-html';
 import {
   LitElement,
   html,
@@ -21,6 +20,8 @@ interface ListenersMap {
   click: Function;
 }
 
+export type OverlayRenderer = (root: HTMLElement) => void;
+
 @customElement('lit-overlay')
 export class LitOverlay extends LitElement {
   // Used to instantiate the class.
@@ -28,15 +29,19 @@ export class LitOverlay extends LitElement {
 
   @property({ type: Boolean, reflect: true }) opened = false;
 
-  @property({ attribute: false }) placeholder?: NodePart = undefined;
-
   @property({ type: Boolean }) withBackdrop = false;
 
   @property({ type: Boolean }) mouseDownInside = false;
 
   @property({ type: Boolean }) mouseUpInside = false;
 
+  @property({ attribute: false }) renderer?: OverlayRenderer;
+
+  @property({ attribute: false }) owner?: HTMLElement;
+
   protected $: IdCache = {};
+
+  protected _placeholder = document.createComment('liv-overlay-placeholder');
 
   protected listeners: ListenersMap = Object.freeze({
     mousedown: this.mouseDownListener.bind(this),
@@ -122,9 +127,7 @@ export class LitOverlay extends LitElement {
     return html`
       <div id="backdrop" part="backdrop" ?hidden="${!this.withBackdrop}"></div>
       <div part="overlay" id="overlay" tabindex="0">
-        <div part="content" id="content">
-          <slot></slot>
-        </div>
+        <div part="content" id="content"></div>
       </div>
     `;
   }
@@ -138,26 +141,29 @@ export class LitOverlay extends LitElement {
     if (props.has('opened')) {
       if (this.opened) {
         this.open();
+        if (this.renderer) {
+          this.runRenderer();
+        }
       } else if (props.get('opened')) {
         this.close();
       }
     }
   }
 
+  runRenderer() {
+    if (this.renderer && this.owner && this.$.content) {
+      this.renderer.call(this.owner, this.$.content);
+    }
+  }
+
   protected open() {
-    document.body.appendChild(this);
+    this._attachOverlay();
     this.addGlobalListeners();
-    // set empty value to placeholder
-    (this.placeholder as NodePart).setValue(nothing);
-    (this.placeholder as NodePart).commit();
   }
 
   protected close() {
-    document.body.removeChild(this);
+    this._detachOverlay();
     this.removeGlobalListeners();
-    // teleport back to placeholder
-    (this.placeholder as NodePart).setValue(this);
-    (this.placeholder as NodePart).commit();
   }
 
   protected addGlobalListeners() {
@@ -210,5 +216,18 @@ export class LitOverlay extends LitElement {
         })
       );
     }
+  }
+
+  private _attachOverlay() {
+    if (this.parentNode) {
+      this.parentNode.insertBefore(this._placeholder, this);
+      document.body.appendChild(this);
+    }
+  }
+
+  private _detachOverlay() {
+    const host = this._placeholder.parentNode as HTMLElement;
+    host.insertBefore(this, this._placeholder);
+    host.removeChild(this._placeholder);
   }
 }

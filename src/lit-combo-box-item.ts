@@ -32,7 +32,13 @@ export class LitComboBoxItem extends LitElement {
 
   protected firstUpdated() {
     this.addEventListener('click', () => {
-      this.dispatchEvent(new CustomEvent('lit-combo-box-item-click', { bubbles: true }));
+      this.dispatchEvent(
+        new CustomEvent('lit-combo-box-item-click', {
+          detail: { value: this.getAttribute('value') },
+          bubbles: true,
+          composed: true
+        })
+      );
     });
   }
 }
